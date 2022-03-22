@@ -13,14 +13,27 @@ TIPI DI ORDINAMENTO:
 int *ordinamentoSelezione(int *arrayNumeri, int nNumeri)
 {
 	int i, j;
-	int numeroBasso;
+	int numeroPiuBasso, indexNumeroBasso;
+	int numeroSostituito;
 	
 	for (i = 0; i < nNumeri; i++)
-	{	
+	{		
+		// ricerca del numero più piccolo
+		numeroPiuBasso = arrayNumeri[i];
+		
 		for (j = i + 1; j < nNumeri; j++)
 		{
-			//
+			if (numeroPiuBasso > arrayNumeri[j]) // seviene trovato un numero più piccolo
+			{
+				numeroPiuBasso = arrayNumeri[j]; // sostituzione del numero piu piccolo
+				indexNumeroBasso = j; // si tiene conto dell'indice dell'elemento nella lista
+			}
 		}
+		
+		// sostituzione del numero piu piccolo con quello piu grande
+		numeroSostituito = arrayNumeri[indexNumeroBasso]; 
+		arrayNumeri[indexNumeroBasso] =  arrayNumeri[i];
+		arrayNumeri[i] = numeroSostituito;
 	}
 	
 	return arrayNumeri; // restituzione dell'array ordinato
@@ -44,7 +57,7 @@ int *generaNumeri (int nNumeri)
 	// generazione e aggiunta dei numeri casuali all'array
 	for (i = 0; i < nNumeri; i++)
 	{
-		arrayNumeri[i] = rand();
+		arrayNumeri[i] = rand() % 50;
 	}	
 	
 	return arrayNumeri;
@@ -61,6 +74,21 @@ int main()
 	
 	// generazione dell'array di numeri casuali
 	arrayNumeri = generaNumeri(nNumeri);
+	
+	printf("\nArray non ordinato\n");
+	for (i = 0; i < nNumeri; i++)
+	{
+		printf("%d ", arrayNumeri[i]);
+	}
+	
+	// ordinamento dell'array per selzione
+	arrayNumeri = ordinamentoSelezione(arrayNumeri, nNumeri);
+	
+	printf("\n\nArray ordinato\n");
+	for (i = 0; i < nNumeri; i++)
+	{
+		printf("%d ", arrayNumeri[i]);
+	}
 	
 	
 	// liberazione della memoria
