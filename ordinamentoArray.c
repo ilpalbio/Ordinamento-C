@@ -9,31 +9,34 @@ TIPI DI ORDINAMENTO:
 #include <stdlib.h>
 #include <malloc.h>
 
+// costanti
+#define grandezzaRand 1
+
 // funzione per algoritmo di ordinamento per selezione
 int *ordinamentoSelezione(int *arrayNumeri, int nNumeri)
 {
 	int i, j;
-	int numeroPiuBasso, indexNumeroBasso;
+	int numeroPiuBasso;
 	int numeroSostituito;
 	
 	for (i = 0; i < nNumeri; i++)
-	{		
-		// ricerca del numero pi� piccolo
+	{	
+		// ricerca del numero più piccolo
 		numeroPiuBasso = arrayNumeri[i];
-		
+
 		for (j = i + 1; j < nNumeri; j++)
-		{
-			if (numeroPiuBasso > arrayNumeri[j]) // seviene trovato un numero pi� piccolo
-			{
+		{	
+			if (numeroPiuBasso > arrayNumeri[j]) // seviene trovato un numero più piccolo
+			{	
 				numeroPiuBasso = arrayNumeri[j]; // sostituzione del numero piu piccolo
-				indexNumeroBasso = j; // si tiene conto dell'indice dell'elemento nella lista
+
+				// sostituzione del numero piu piccolo con quello piu grande
+				numeroSostituito = arrayNumeri[j]; 
+				arrayNumeri[j] =  arrayNumeri[i];
+				arrayNumeri[i] = numeroSostituito;
 			}
 		}
 		
-		// sostituzione del numero piu piccolo con quello piu grande
-		numeroSostituito = arrayNumeri[indexNumeroBasso]; 
-		arrayNumeri[indexNumeroBasso] =  arrayNumeri[i];
-		arrayNumeri[i] = numeroSostituito;
 	}
 	
 	return arrayNumeri; // restituzione dell'array ordinato
@@ -42,7 +45,25 @@ int *ordinamentoSelezione(int *arrayNumeri, int nNumeri)
 // funzione per algoritmo di ordinamento per bubble sort
 int *ordinamentoBubbleSort(int *arrayNumeri, int nNumeri)
 {
-	//
+	int i, j;
+	int numeroSostituito;
+
+	for (j = 0; j < nNumeri - 1; j++)
+	{
+		for (i = 0; i < nNumeri - 1; i++)
+		{
+			// comparazione tra i due numeri
+			if (arrayNumeri[i] > arrayNumeri[i + 1]) // se il numero successivo è più piccolo
+			{	
+				// scambio tra i due numeri
+				numeroSostituito = arrayNumeri[i];
+				arrayNumeri[i] = arrayNumeri[i + 1];
+				arrayNumeri[i + 1] = numeroSostituito;
+			}
+		}
+	}
+
+	return arrayNumeri; // restituzione dell'array ordinato
 }
 
 // funzione per generazione di un array di n numeri casuali
@@ -57,7 +78,7 @@ int *generaNumeri (int nNumeri)
 	// generazione e aggiunta dei numeri casuali all'array
 	for (i = 0; i < nNumeri; i++)
 	{
-		arrayNumeri[i] = rand() % 50;
+		arrayNumeri[i] = rand() % grandezzaRand;
 	}	
 	
 	return arrayNumeri;
@@ -66,7 +87,7 @@ int *generaNumeri (int nNumeri)
 // funzione principale
 int main()
 {	
-	int nNumeri, i;
+	int nNumeri;
 	int *arrayNumeri;
 	
 	printf("Numero del numei di numeri da aggiungere all'array [max 1000]: ");
@@ -75,20 +96,8 @@ int main()
 	// generazione dell'array di numeri casuali
 	arrayNumeri = generaNumeri(nNumeri);
 	
-	printf("\nArray non ordinato\n");
-	for (i = 0; i < nNumeri; i++)
-	{
-		printf("%d ", arrayNumeri[i]);
-	}
-	
 	// ordinamento dell'array per selzione
-	arrayNumeri = ordinamentoSelezione(arrayNumeri, nNumeri);
-	
-	printf("\n\nArray ordinato\n");
-	for (i = 0; i < nNumeri; i++)
-	{
-		printf("%d ", arrayNumeri[i]);
-	}
+	arrayNumeri = ordinamentoBubbleSort(arrayNumeri, nNumeri);
 	
 	
 	// liberazione della memoria
