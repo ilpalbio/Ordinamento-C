@@ -12,6 +12,8 @@ TIPI DI ORDINAMENTO:
 
 // costanti
 #define grandezzaRand 1
+#define nomeFileSelezione "datiSelezione.txt"
+#define nomeFileBubble "datiBubble.txt"
 
 // struct per tupla
 typedef struct
@@ -126,49 +128,67 @@ int *generaNumeri (int nNumeri)
 	return arrayNumeri;
 }
 
+
+// funzione per la scrittura dei dati su file 
+void scritturaDatiFile(int nNumeri, double tempoEsecuzione, char nomeFile[20])
+{	
+	FILE *file;
+
+	// apertura del file in modalità append
+	file = fopen(nomeFile, "a");
+	
+	if (!file) // il file non esiste
+	{
+		// creazione del file
+		file = fopen(nomeFile, "w");
+		fclose(file);
+		
+		// apertura del file in append
+		file = fopen(nomeFile, "a");
+	}
+	
+	// scrittura dei dati
+	fprintf(file, "%d %f\n", &nNumeri, &tempoEsecuzione);
+	
+	// chiusura del file
+	fclose(file);
+}
+
 // funzione principale
 int main()
 {	
+	int i;
 	int nNumeri;
 	int *arrayNumeri;
 
 	Tupla *risultati;
 	double tempoEsecuzione;
 	int  *arrayNumeriOrdinati;
-
 	
-	printf("Numero del numei di numeri da aggiungere all'array: ");
-	scanf("%d", &nNumeri);
-	
-	// generazione dell'array di numeri casuali
-	arrayNumeri = generaNumeri(nNumeri);
-	
-	// ordinamento dell'array per selezione
-	risultati = ordinamentoSelezione(arrayNumeri, nNumeri);
-	
-	arrayNumeriOrdinati = risultati->arrayNumeri;
-	tempoEsecuzione = risultati->tempoEsecuzione;
-
-	// scrittura dei dati per l'algoritmo a selezione
-	printf("\nAlgoritmo ordinamento per selezione");
-	printf("\n-------------------------------------------------------");
-	printf("\nNumero elementi da ordinare: %d", nNumeri);
-	printf("\nTempo di esecuzione: %f", tempoEsecuzione);
-	printf("\n-------------------------------------------------------\n");
-
-
-	// ordinamento dell'array per BubbleSort
-	risultati = ordinamentoBubbleSort(arrayNumeri, nNumeri);
-
-	arrayNumeriOrdinati = risultati->arrayNumeri;
-	tempoEsecuzione = risultati->tempoEsecuzione;
-
-	// scrittura dei dati per l'algoritmo a BubbleSort
-	printf("\nAlgoritmo ordinamento bubble sort");
-	printf("\n-------------------------------------------------------");
-	printf("\nNumero elementi da ordinare: %d", nNumeri);
-	printf("\nTempo di esecuzione: %f", tempoEsecuzione);
-	printf("\n-------------------------------------------------------");
+	// test degli algoritmi
+	for (i = 10000; i < 10000; i += 1000)
+	{
+		// generazione dell'array di numeri casuali
+		arrayNumeri = generaNumeri(i);
+		
+		// ordinamento dell'array per selezione
+		risultati = ordinamentoSelezione(arrayNumeri, i);
+		
+		arrayNumeriOrdinati = risultati->arrayNumeri;
+		tempoEsecuzione = risultati->tempoEsecuzione;
+		
+		// scrittura dei dati su file per la selezione
+		scritturaDatiFile(i, tempoEsecuzione, nomeFileSelezione);
+		
+		// ordinamento dell'array per BubbleSort
+		risultati = ordinamentoBubbleSort(arrayNumeri, i);
+		
+		arrayNumeriOrdinati = risultati->arrayNumeri;
+		tempoEsecuzione = risultati->tempoEsecuzione;
+		
+		// scrittura dei dati su file per bubble sort
+		scritturaDatiFile(i, tempoEsecuzione, nomeFileBubble);
+	}
 
 	// liberazione della memoria
 	free(arrayNumeri);
