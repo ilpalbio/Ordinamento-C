@@ -12,8 +12,12 @@ TIPI DI ORDINAMENTO:
 
 // costanti
 #define grandezzaRand 1
-#define nomeFileSelezione "datiSelezione.txt"
-#define nomeFileBubble "datiBubble.txt"
+#define nomeFileSelezione "datiSelezione.csv"
+#define nomeFileBubble "datiBubble.csv"
+
+#define nMin 1000
+#define nMax 10000
+#define nIncremento 1000
 
 // struct per tupla
 typedef struct
@@ -60,7 +64,7 @@ Tupla *ordinamentoSelezione(int *arrayNumeri, int nNumeri)
 	tempoFine = clock();
 
 	// calcolo del tempo totale
-	tempoTotale = (double)(tempoFine - tempoInizio) / CLOCKS_PER_SEC;
+	tempoTotale = (double)(tempoFine - tempoInizio);
 
 	Tupla *risultati = malloc(1 * sizeof*risultati);
 	risultati->arrayNumeri = arrayNumeri;
@@ -100,7 +104,7 @@ Tupla *ordinamentoBubbleSort(int *arrayNumeri, int nNumeri)
 	tempoFine = clock();
 
 	// calcolo del tempo totale
-	tempoTotale = (double)(tempoFine - tempoInizio) / CLOCKS_PER_SEC;
+	tempoTotale = (double)(tempoFine - tempoInizio);
 
 	Tupla *risultati = malloc(1 * sizeof*risultati);
 	risultati->arrayNumeri = arrayNumeri;
@@ -128,67 +132,53 @@ int *generaNumeri (int nNumeri)
 	return arrayNumeri;
 }
 
-
-// funzione per la scrittura dei dati su file 
-void scritturaDatiFile(int nNumeri, double tempoEsecuzione, char nomeFile[20])
-{	
-	FILE *file;
-
-	// apertura del file in modalità append
-	file = fopen(nomeFile, "a");
-	
-	if (!file) // il file non esiste
-	{
-		// creazione del file
-		file = fopen(nomeFile, "w");
-		fclose(file);
-		
-		// apertura del file in append
-		file = fopen(nomeFile, "a");
-	}
-	
-	// scrittura dei dati
-	fprintf(file, "%d %f\n", &nNumeri, &tempoEsecuzione);
-	
-	// chiusura del file
-	fclose(file);
-}
-
 // funzione principale
 int main()
 {	
 	int i;
-	int nNumeri;
 	int *arrayNumeri;
 
 	Tupla *risultati;
 	double tempoEsecuzione;
-	int  *arrayNumeriOrdinati;
-	
-	// test degli algoritmi
-	for (i = 10000; i < 10000; i += 1000)
-	{
+
+	// creazione dei fue file per salvare i dati
+	FILE *fileSelezione, *fileBubble;
+
+	// apertura dei file per scrivere i dati
+	fileSelezione = fopen(nomeFileSelezione, "w");
+	fileBubble = fopen(nomeFileBubble, "w");
+
+	fprintf(fileSelezione, "Numero_numeri;Tempo_esecuzione\n");
+	fprintf(fileBubble, "Numero_numeri;Tempo_esecuzione\n");
+
+	for (i = nMin; i < nMax; i+=nIncremento)
+	{	
 		// generazione dell'array di numeri casuali
 		arrayNumeri = generaNumeri(i);
 		
 		// ordinamento dell'array per selezione
 		risultati = ordinamentoSelezione(arrayNumeri, i);
 		
-		arrayNumeriOrdinati = risultati->arrayNumeri;
 		tempoEsecuzione = risultati->tempoEsecuzione;
-		
-		// scrittura dei dati su file per la selezione
-		scritturaDatiFile(i, tempoEsecuzione, nomeFileSelezione);
-		
+
+		// scrittura dei dati
+		fprintf(fileSelezione, "%d;%f\n", i, tempoEsecuzione / 100);
+
+
+
 		// ordinamento dell'array per BubbleSort
 		risultati = ordinamentoBubbleSort(arrayNumeri, i);
 		
-		arrayNumeriOrdinati = risultati->arrayNumeri;
 		tempoEsecuzione = risultati->tempoEsecuzione;
 		
 		// scrittura dei dati su file per bubble sort
-		scritturaDatiFile(i, tempoEsecuzione, nomeFileBubble);
+		fprintf(fileBubble, "%d;%f\n", i, tempoEsecuzione / 100);
+
 	}
+
+	// chiusura dei file
+	fclose(fileSelezione);
+	fclose(fileSelezione);
 
 	// liberazione della memoria
 	free(arrayNumeri);
