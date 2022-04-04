@@ -12,8 +12,7 @@ TIPI DI ORDINAMENTO:
 
 // costanti
 #define grandezzaRand 1
-#define nomeFileSelezione "datiSelezione.csv"
-#define nomeFileBubble "datiBubble.csv"
+#define nomeFile "confrontoAlgoritmi.csv"
 
 #define nMin 1000
 #define nMax 10000
@@ -139,18 +138,18 @@ int main()
 	int *arrayNumeri;
 
 	Tupla *risultati;
-	double tempoEsecuzione;
+	double tempoEsecuzioneSelezione;
+	double tempoEsecuzioneBubble;
 
-	// creazione dei fue file per salvare i dati
-	FILE *fileSelezione, *fileBubble;
+	// creazione del file per il confronto degli algoritmi
+	FILE *file;
 
-	// apertura dei file per scrivere i dati
-	fileSelezione = fopen(nomeFileSelezione, "w");
-	fileBubble = fopen(nomeFileBubble, "w");
+	file = fopen(nomeFile, "w");
 
-	fprintf(fileSelezione, "Numero_numeri;Tempo_esecuzione\n");
-	fprintf(fileBubble, "Numero_numeri;Tempo_esecuzione\n");
+	// scrittura delle info rispetto ai dati
+	fprintf(file, "Numero_numeri;Tempo_impiegato(s)_SelectionSort;Tempo_impiegato(s)_BubbleSort\n");
 
+	// scrittura dei dati dell'ordinamento per selezione
 	for (i = nMin; i < nMax; i+=nIncremento)
 	{	
 		// generazione dell'array di numeri casuali
@@ -159,26 +158,19 @@ int main()
 		// ordinamento dell'array per selezione
 		risultati = ordinamentoSelezione(arrayNumeri, i);
 		
-		tempoEsecuzione = risultati->tempoEsecuzione;
-
-		// scrittura dei dati
-		fprintf(fileSelezione, "%d;%f\n", i, tempoEsecuzione / 100);
-
-
+		tempoEsecuzioneSelezione = risultati->tempoEsecuzione;
 
 		// ordinamento dell'array per BubbleSort
 		risultati = ordinamentoBubbleSort(arrayNumeri, i);
 		
-		tempoEsecuzione = risultati->tempoEsecuzione;
+		tempoEsecuzioneBubble = risultati->tempoEsecuzione;
 		
-		// scrittura dei dati su file per bubble sort
-		fprintf(fileBubble, "%d;%f\n", i, tempoEsecuzione / 100);
-
+		// scrittura dei dati su file
+		fprintf(file, "%d;%f;%f\n", i, tempoEsecuzioneSelezione / 100 ,tempoEsecuzioneBubble / 100);
 	}
-
-	// chiusura dei file
-	fclose(fileSelezione);
-	fclose(fileSelezione);
+	
+	// chiusura del file
+	fclose(file);
 
 	// liberazione della memoria
 	free(arrayNumeri);
